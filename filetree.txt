@@ -1,0 +1,26 @@
+Folder PATH listing
+Volume serial number is 0000003D F8F2:64AF
+C:.
+|   filetree.txt
+|   index.html
+|   
++---assets
+|   +---images
+|   +---sounds
+|   \---sprites
++---css
+|       styles.css
+|       
+\---js
+    |   camera.js
+    |   input.js
+    |   levelLoader.js
+    |   main.js
+    |   platforms.js
+    |   player.js
+    |   testObjects.js
+    |   
+    \---levels
+            introLevel.js
+            level1.js
+            

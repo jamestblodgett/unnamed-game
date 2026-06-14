@@ -9,7 +9,7 @@ let player = {
     maxSpeed: 4,       // top running speed
     friction: 0.9,     // friction when on ground
     airFriction: 0.95, // friction in air (less)
-    jumpForce: 10,
+    jumpForce: 11,
     onGround: false
 };
 
@@ -45,18 +45,15 @@ function updatePlayer() {
     // Apply movement
     player.x += player.velocityX;
     player.y += player.velocityY;
-
-    // Simple floor collision
-    const floorY = 400;
-    if (player.y + player.height > floorY) {
-        player.y = floorY - player.height;
-        player.velocityY = 0;
-        player.onGround = true;
-    }
 }
 
 
 function drawPlayer(ctx) {
-    ctx.fillStyle = "green";
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    ctx.fillStyle = "orange";
+    ctx.fillRect(
+        player.x - camera.x,
+        player.y - camera.y,
+        player.width,
+        player.height
+    );
 }
