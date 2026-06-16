@@ -7,17 +7,21 @@
 </head>
 <body>
 
-    <canvas id="gameCanvas" width="800" height="450"></canvas>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="450"></canvas>
+        <div id="debugPanel"></div>
+    </div>
 
-    <script src="js/player.js"></script>
-    <script src="js/levels/introLevel.js"></script>
-    <script src="js/levels/level1.js"></script>
-    <script src="js/levelLoader.js"></script>
-    <script src="js/input.js"></script>
-    <script src="js/camera.js"></script>
-    <script src="js/platforms.js"></script>
-    <!-- <script src="js/testObjects.js"></script> -->
-     <script src="js/collision.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/objects/player.js"></script>
+    <script src="js/objects/objectMaker.js"></script>
+    <script src="js/levels/home.js"></script>
+    <script src="js/levels/subway.js"></script>
+    <script src="js/gameLogic/levelLoader.js"></script>
+    <script src="js/core/input.js"></script>
+    <script src="js/core/camera.js"></script>
+    <script src="js/gameLogic/platforms.js"></script>
+    <script src="js/gameLogic/collision.js"></script>
+    <script src="js/gameLogic/doorLogic.js"></script>
+    <script src="js/core/main.js"></script>
 </body>
 </html>

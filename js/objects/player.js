@@ -1,5 +1,5 @@
 let player = {
-    x: 50,
+    x: 275,
     y: 50,
     width: 32,
     height: 32,

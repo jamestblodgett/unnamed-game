@@ -1,0 +1,14 @@
+The js/core folder is intended to hold files that are core
+to the functionalities of the game. They tie together other
+files and control the main game loop. Objects, raw functions,
+and levels are not meant to go in this folder.
+
+# DO
+ - Core functionalities
+ - Game loop
+ - Tie-in functions
+
+# DONT
+ - Objects
+ - functions
+ - Levels
