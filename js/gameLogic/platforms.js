@@ -1,9 +1,14 @@
 function drawPlatforms(ctx) {
     if (!currentLevel) return;
 
-    ctx.fillStyle = "gray";
-
     for (const p of currentLevel.platforms) {
+        if (p.collide === false) {
+            ctx.fillStyle = "rgba(80, 80, 80, 0.6)";
+        } else {
+            ctx.fillStyle = "gray";
+        }
+
+
         ctx.fillRect(
             p.x - camera.x,
             p.y - camera.y,

@@ -1,6 +1,7 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const debugPanel = document.getElementById("debugPanel");
+const GLOBAL_DEBUG = false;
 
 loadLevel(allLevels[currentLevelIndex]);
 
@@ -15,6 +16,7 @@ function gameLoop() {
 
     drawPlatforms(ctx);
     drawDoors(ctx);
+    drawTexts(ctx);
     drawPlayer(ctx);
     updateDebug();
 
@@ -35,7 +37,13 @@ function updateDebug() {
 
 // FUNCTIONS
 function checkFallReset() {
-    const deathY = WORLD_BOTTOM-100;
+    let deathY = WORLD_BOTTOM;
+    if (GLOBAL_DEBUG){
+        deathY = 100;
+    } else {
+        deathY = WORLD_BOTTOM - 100;
+    }
+    
 
     if (player.y > deathY) {
         player.x = currentLevel.spawn.x;

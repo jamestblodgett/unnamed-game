@@ -9,6 +9,8 @@ function checkCollisions() {
     const prevY = player.y - player.velocityY;
 
     for (const p of currentLevel.platforms) {
+        if (p.collide === false) continue;
+
 
         // AABB overlap check
         if (player.x < p.x + p.width &&
@@ -50,22 +52,25 @@ function checkCollisions() {
                 continue;
             }
 
-            // -----------------------------
-            // COLLIDING WITH LEFT SIDE
-            // -----------------------------
-            if (prevRight <= platformLeft && playerRight >= platformLeft && player.velocityX > 0) {
-                player.x = platformLeft - player.width;
-                player.velocityX = 0;
-                continue;
-            }
 
-            // -----------------------------
-            // COLLIDING WITH RIGHT SIDE
-            // -----------------------------
-            if (prevLeft >= platformRight && playerLeft <= platformRight && player.velocityX < 0) {
-                player.x = platformRight;
-                player.velocityX = 0;
-                continue;
+            if (!GLOBAL_DEBUG){
+                // -----------------------------
+                // COLLIDING WITH LEFT SIDE
+                // -----------------------------
+                if (prevRight <= platformLeft && playerRight >= platformLeft && player.velocityX > 0) {
+                    player.x = platformLeft - player.width;
+                    player.velocityX = 0;
+                    continue;
+                }
+
+                // -----------------------------
+                // COLLIDING WITH RIGHT SIDE
+                // -----------------------------
+                if (prevLeft >= platformRight && playerLeft <= platformRight && player.velocityX < 0) {
+                    player.x = platformRight;
+                    player.velocityX = 0;
+                    continue;
+                }
             }
         }
     }

@@ -1,29 +1,32 @@
-function floatingPlatform({ x, y, width = 100, height = 20 }) {
+function floatingPlatform({ x, y, width = 100, height = 20, collide = true }) {
     return [{
         x,
         y,
         width,
-        height
+        height,
+        collide
     }];
 }
 
-function wall({ x, y, height = 200, width = 20 }) {
+function wall({ x, y, height = 200, width = 20, collide = true }) {
     return [{
         x,
         y,
         width,
-        height
+        height,
+        collide
     }];
 }
 
 const WORLD_BOTTOM = 1200;
 
-function standingPlatform({ x, topY, width = 40 }) {
+function standingPlatform({ x, topY, width = 40, collide = true }) {
     return [{
         x,
         y: topY,
         width,
-        height: WORLD_BOTTOM - topY
+        height: WORLD_BOTTOM - topY,
+        collide
     }];
 }
 
@@ -34,53 +37,50 @@ function box({
     height = 200,
     wallThickness = 20,
     doorSide = null, // "left", "right", "both", or null
-    doorSize = 60
+    doorSize = 60,
+    collide = true
 }) {
     const platforms = [];
 
-    // --- SIDE WALLS FIRST (placed between top & bottom walls) ---
-    const innerTop = y + wallThickness;
-    const innerHeight = Math.max(0, height - wallThickness * 2);
+    // --- SIDE WALLS FIRST (so they don't get hidden) ---
 
     // LEFT WALL
     if (doorSide === "left" || doorSide === "both") {
-        const sideHeight = Math.max(0, innerHeight - doorSize);
-        if (sideHeight > 0) {
-            platforms.push({
-                x,
-                y: innerTop,
-                width: wallThickness,
-                height: sideHeight
-            });
-        }
-    } else {
-        // full left wall (between top and bottom)
+        // left wall with bottom door gap
         platforms.push({
             x,
-            y: innerTop,
+            y,
             width: wallThickness,
-            height: innerHeight
+            height: height - doorSize,
+            collide
+        });
+    } else {
+        // full left wall
+        platforms.push({
+            x,
+            y,
+            width: wallThickness,
+            height,
+            collide
         });
     }
 
     // RIGHT WALL
-    const rightX = x + width - wallThickness;
     if (doorSide === "right" || doorSide === "both") {
-        const sideHeight = Math.max(0, innerHeight - doorSize);
-        if (sideHeight > 0) {
-            platforms.push({
-                x: rightX,
-                y: innerTop,
-                width: wallThickness,
-                height: sideHeight
-            });
-        }
+        platforms.push({
+            x: x + width - wallThickness,
+            y,
+            width: wallThickness,
+            height: height - doorSize,
+            collide
+        });
     } else {
         platforms.push({
-            x: rightX,
-            y: innerTop,
+            x: x + width - wallThickness,
+            y,
             width: wallThickness,
-            height: innerHeight
+            height,
+            collide
         });
     }
 
@@ -89,7 +89,8 @@ function box({
         x,
         y,
         width,
-        height: wallThickness
+        height: wallThickness,
+        collide
     });
 
     // --- BOTTOM WALL ---
@@ -97,11 +98,13 @@ function box({
         x,
         y: y + height - wallThickness,
         width,
-        height: wallThickness
+        height: wallThickness,
+        collide
     });
 
     return platforms;
 }
+
 
 function stairs({
     direction = "right", // "right" or "left"
@@ -109,7 +112,8 @@ function stairs({
     y,
     stepWidth = 32,
     stepHeight = 32,
-    steps = 5    
+    steps = 5,
+    collide = true
 }) {
     const platforms = [];
     for (let i = 0; i < steps; i++) {
@@ -117,7 +121,8 @@ function stairs({
             x: direction === "right" ? x + i * stepWidth : x - i * stepWidth,
             y: y - i * stepHeight,
             width: stepWidth + 1,
-            height: stepHeight * i
+            height: stepHeight * i,
+            collide
         });
     }
     return platforms;
@@ -126,26 +131,30 @@ function stairs({
 function lantern({
     x,
     y,
+    scale = 1,
     width = 30,
     height = 35,
-    wall = false // False, right, or left (for lanterns hanging on walls)
+    wall = false, // False, right, or left (for lanterns hanging on walls)
+    collide = true
     }) {
     
     const platforms = [];
     // Post
-    if (wall === "false") {
+    if (wall === false) {
             platforms.push({
             x,
             y,
             width: width,
-            height: 5,
+            height: height/7,
+            collide
         });
     } else if (wall === "right") {
         platforms.push({
             x,
             y,
             width: width + 8,
-            height: 5,
+            height: height/7,
+            collide
         });
     } else {
         platforms.push({
@@ -153,8 +162,16 @@ function lantern({
             y,
             width: width + 8,
             height: 5,
+            collide
         });
     }
+    platforms.push({
+        x: x + 3,
+        y: y - 2,
+        width: width - 6,
+        height: 4,
+        collide
+    });
         
     
 
@@ -164,18 +181,21 @@ function lantern({
         y: y + 2,
         width: 4,
         height: 35,
+        collide
     });
     platforms.push({ // Center middle
         x: x + ((width / 2) - 3),
         y: height - 31 + y,
         width: 6,
         height: height/2,
+        collide
     });
     platforms.push({ // Center top
         x: x + ((width / 2) - 4),
         y: height - 31 + y,
         width: 8,
         height: height/4,
+        collide
     });
 
     
@@ -185,51 +205,84 @@ function lantern({
         y: height - 3 + y,
         width: 14,
         height: 4,
+        collide
     });
     platforms.push({ // Beam 2
         x: x + ((width / 2) - 10),
         y: height - 7 + y,
         width: 20,
         height: 2,
+        collide
     });
     platforms.push({ // Beam 3
         x: x + ((width / 2) - 12),
         y: height - 11 + y,
         width: 24,
         height: 2,
+        collide
     });
     platforms.push({ // Beam 4
         x: x + ((width / 2) - 13),
         y: height - 15 + y,
         width: 26,
         height: 2,
+        collide
     });
     platforms.push({ // Beam 5
         x: x + ((width / 2) - 12),
         y: height - 19 + y,
         width: 24,
         height: 2,
+        collide
     });
     platforms.push({ // Beam 6
         x: x + ((width / 2) - 10),
         y: height - 23 + y,
         width: 20,
         height: 2,
+        collide
     });
     platforms.push({ // Beam 7
         x: x + ((width / 2) - 8),
         y: height - 27 + y,
         width: 16,
         height: 2,
+        collide
     });
     platforms.push({ // Beam 8
         x: x + ((width / 2) - 8),
         y: height - 31 + y,
         width: 16,
         height: 2,
+        collide
     });
     return platforms;
 }
+
+function slope({ x, y, width, height, direction = "right", steps = 10, collide = true}) {
+    const segments = [];
+    
+    for (let i = 0; i < steps; i++) {
+        const segmentHeight = height / steps;
+        const segmentWidth = width / steps;
+
+        const segX = direction === "right"
+            ? x + i * segmentWidth
+            : x + width - (i + 1) * segmentWidth;
+
+        const segY = y + i * segmentHeight;
+
+        segments.push({
+            x: segX,
+            y: segY,
+            width: segmentWidth,
+            height: segmentHeight,
+            collide
+        });
+    }
+    return segments;
+}
+
 
 function createDoor({ x, y, width = 40, height = 60, targetLevel, spawnX = null, spawnY = null }) {
     return {

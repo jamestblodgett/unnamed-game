@@ -1,6 +1,6 @@
 let currentLevel = null;
 let currentLevelIndex = 0;
-const allLevels = [home, subway];
+const allLevels = [home, subway, debug];
 
 function loadLevel(levelData, spawnX = null, spawnY = null) {
     // Fallback if level is missing or undefined
@@ -35,6 +35,12 @@ function loadLevel(levelData, spawnX = null, spawnY = null) {
     player.velocityX = 0;
     player.velocityY = 0;
     player.onGround = false;
+
+    if (GLOBAL_DEBUG) {
+        levelData = allLevels[allLevels.length - 1];  
+        currentLevel = levelData;
+        return;
+    }
 }
 
 
