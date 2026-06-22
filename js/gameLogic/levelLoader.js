@@ -9,6 +9,12 @@ function loadLevel(levelData, spawnX = null, spawnY = null) {
         levelData = allLevels[0];
     }
 
+    // If running in debug mode, force the last level (debug) to load
+    if (typeof GLOBAL_DEBUG !== 'undefined' && GLOBAL_DEBUG) {
+        levelData = allLevels[allLevels.length - 1];
+        currentLevelIndex = allLevels.length - 1;
+    }
+
     currentLevel = levelData;
 
     // Determine spawn point:
@@ -35,12 +41,6 @@ function loadLevel(levelData, spawnX = null, spawnY = null) {
     player.velocityX = 0;
     player.velocityY = 0;
     player.onGround = false;
-
-    if (GLOBAL_DEBUG) {
-        levelData = allLevels[allLevels.length - 1];  
-        currentLevel = levelData;
-        return;
-    }
 }
 
 

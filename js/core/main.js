@@ -32,7 +32,8 @@ function updateDebug() {
     const mouseLevelY = (mouseScreenY !== null && typeof camera !== "undefined") ? mouseScreenY + camera.y : null;
     const mouseX = mouseLevelX !== null ? mouseLevelX.toFixed(0) : "n/a";
     const mouseY = mouseLevelY !== null ? mouseLevelY.toFixed(0) : "n/a";
-    debugPanel.textContent = `player.x: ${player.x.toFixed(0)} player.y: ${player.y.toFixed(0)} mouse.x: ${mouseX} mouse.y: ${mouseY} level: ${levelName} index: ${currentLevelIndex}`;
+    const downPressed = downOnce();
+    debugPanel.textContent = `player.x: ${player.x.toFixed(0)} player.y: ${player.y.toFixed(0)} mouse.x: ${mouseX} mouse.y: ${mouseY} level: ${levelName} index: ${currentLevelIndex} downPressed: ${downPressed}`;
 }
 
 // FUNCTIONS

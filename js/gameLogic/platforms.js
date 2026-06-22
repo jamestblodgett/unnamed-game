@@ -3,7 +3,7 @@ function drawPlatforms(ctx) {
 
     for (const p of currentLevel.platforms) {
         if (p.collide === false) {
-            ctx.fillStyle = "rgba(80, 80, 80, 0.6)";
+            ctx.fillStyle = "rgb(71, 71, 71)";
         } else {
             ctx.fillStyle = "gray";
         }

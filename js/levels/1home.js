@@ -1,7 +1,7 @@
 let inc = 325;
 const home = {
     name: "home",
-    spawn: { x: 260, y: 268 },
+    spawn: { x: 780, y: -104 },
     platforms: [
         // Ground and outer walls
         ...standingPlatform({ x: -100, topY: 300, width: 950 }), // Ground1
@@ -16,6 +16,13 @@ const home = {
             doorSide: "right",
             doorSize: 200
         }),
+
+        // Starting bedroom
+        ...bed({x: 243, y: 268, collide: false}),
+        ...dresser({x: 350, y: 199, shelves: 1, collide: false}),
+        ...shelf({x: 437, y: 229, width: 117, height: 70, books: false}),
+
+        // Rest of the house
         ...wall({x: 560, y: 140, width: 40, height: 160, collide: false}),
         ...floatingPlatform({ x: 599, y: -52, width: 401, height: 152 }), // Hallway Roof
         ...standingPlatform({x: 850, topY: 300, width: 100, collide: false}),
@@ -37,14 +44,19 @@ const home = {
         ...floatingPlatform({x: 1000, y: -52, width: 170, height: 20, collide: false}),
         ...slope({x:1230, y: -32, width: 20, height: 20, direction: "right", steps: 3, collide: false}),
 
-        ...stairs({direction: "left", x: 1350 + 320, y: 300, steps: 12 }), // Stairs to bottom platform
-        ...wall({ x: 1250, y: -52, height: 361, width: 80 }), // Hallway wall
-        ...floatingPlatform({ x: -200, y: -450, width: 1450, height: 150}),
+        // Upstairs decoration
+        ...dresser({x: 1115, y: -153, shelves: 1}),
+        ...table({x: 667, y: -84, width: 100, height: 30, chairs: "both", collide: false}),
+        ...shelf({x: 815, y: -174, width: 70, height: 120, books: true, collide: false}),
 
-
+        // Exit
         ...wall({ x: 1210, y: -300, height: 150, width: 40 }), // Upper Hallway wall
         ...wall({ x: 1210, y: -150, height: 99, width: 40, collide: false}),
         ...lantern({ x: 1250, y: -200, wall: "left" }),
+
+        ...stairs({direction: "left", x: 1350 + 320, y: 300, steps: 12 }), // Stairs outside
+        ...wall({ x: 1250, y: -52, height: 361, width: 80 }), // Hallway wall
+        ...floatingPlatform({ x: -200, y: -450, width: 1450, height: 150}),
     ],
 
     doors: [
@@ -53,8 +65,6 @@ const home = {
 
     texts: [
     createText({ x: 300, y: 150, content: "<A       D>" , maxDistance: 150}),
-    createText({x: 650, y: 150, content: "Gray is in", maxDistance: 150}),
-    createText({x: 650, y: 175, content: "the background"}),
 
     createText({x: 900, y: 325, content: "/\\", align: "center", maxDistance: 130}),
     createText({x: 900, y: 350, content: "W", align: "center", maxDistance: 140}),
