@@ -39,7 +39,9 @@ function checkCollisions() {
                 // Skip if player is pressing down to fall through
                 // -----------------------------
                 if (prevBottom <= platformTop && playerBottom >= platformTop && player.velocityY >= 0) {
-                    if (p.collide === true || (p.collide === false && !keys.down)){
+                    // Only allow landing on non-collidable platforms from the player's bottom part
+                    const isBottomPart = (i === playerRects.length - 1);
+                    if (p.collide === true || (p.collide === false && !keys.down && isBottomPart)){
                         player.y = platformTop - rect.height - rect.offsetY;
                         player.velocityY = 0;
                         player.onGround = true;

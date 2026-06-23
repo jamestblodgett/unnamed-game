@@ -1,7 +1,8 @@
 let inc = 325;
 const home = {
     name: "home",
-    spawn: { x: 780, y: -104 },
+    spawn: { x: 265, y: 255 }, // Main spawn
+    // spawn: {x: 1115, y: -97}, // Upstairs door
     platforms: [
         // Ground and outer walls
         ...standingPlatform({ x: -100, topY: 300, width: 950 }), // Ground1
@@ -25,8 +26,7 @@ const home = {
         // Rest of the house
         ...wall({x: 560, y: 140, width: 40, height: 160, collide: false}),
         ...floatingPlatform({ x: 599, y: -52, width: 401, height: 152 }), // Hallway Roof
-        ...standingPlatform({x: 850, topY: 300, width: 100, collide: false}),
-        
+
         ...floatingPlatform({ x: 1170, y: 225, width: 80, height: 20 }), // Jump platform 1
         ...slope({x:1230, y: 245, width: 20, height: 20, direction: "right", steps: 3, collide: false}),
 
@@ -64,22 +64,25 @@ const home = {
     ],
 
     texts: [
-    createText({ x: 300, y: 150, content: "<A       D>" , maxDistance: 150}),
+        createText({type: "world", x: 360, y: 150, lineX: 290, lineY: 270, content: "A       D" , maxDistance: 150, fadeOnLine: true}),
+        createText({type: "player", x: 290, y: 270, content: "\"Good morning world!\"", maxDistance: 75}),
 
-    createText({x: 900, y: 325, content: "/\\", align: "center", maxDistance: 130}),
-    createText({x: 900, y: 350, content: "W", align: "center", maxDistance: 140}),
-    createText({x: 900, y: 375, content: "[space]", align: "center", maxDistance: 150}),
+        createText({type: "player", x: 700, y: 255, content: "*I should really fix this hole. I'll just jump for now.*", maxDistance: 130}),
+    
+        createText({type: "world", content: "W / Space", x: 900, y: 230, lineX: 900, lineY: WORLD_BOTTOM, fadeOnLine: false, maxDistance: 240}),
+        createText({type: "player", x: 1030, y: 105, content: "Ugh, jumping.", align: "center", maxDistance: 80}),
+        createText({type: "world", x: 1090, y: -175, lineX: 1155, lineY: -95, content: "S to pass through dark gray objects.", align: "center", maxDistance: 150}),
 
-    createText({x: 1120, y: 220, content: "> + /\\", align: "center"}),
-    createText({x: 1120, y: 160, content: "< + /\\", align: "center"}),
-    createText({x: 1120, y: 100, content: "> + /\\", align: "center"}),
+        createText({type: "player", x: 1120, y: -97, content: "\"Thanks, note!\"", align: "center", maxDistance: 20}),
+    // createText({type: "world", x: 1120, y: 160, content: "< + /\\", align: "center"}),
+    // createText({type: "world", x: 1120, y: 100, content: "> + /\\", align: "center"}),
 
-    // Screams
-    ...Array.from({ length: WORLD_BOTTOM }, (_, index) =>
-        createText({ x: 900, y: 425 + index * 25, content: "A", fadeSpeed: 0.05, align: "center" })
-    ),
+    // // Screams
+    // ...Array.from({ length: WORLD_BOTTOM }, (_, index) =>
+    //     createText({type: "world", x: 900, y: 425 + index * 25, content: "A", fadeSpeed: 0.05, align: "center" })
+    // ),
 
-    createText({x: 2860, y: 200, content: "V / S"}),
+    // createText({type: "world", x: 2860, y: 200, content: "V / S"}),
     ]
 
 };

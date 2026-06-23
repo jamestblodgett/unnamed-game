@@ -14,15 +14,16 @@ function generateGradientColors(startR, startG, startB, decrement, count) {
     return colors;
 }
 
-const headColors = generateGradientColors(155, 50, 255, 20, 6);
+const testColor = 'rgb(195, 0, 255)'
+const headColors = generateGradientColors(195, 0, 255, 25, 7);
 
 
 
 let player = {
     x: 275,
     y: 50,
-    width: 32,
-    height: 32,
+    width: 26,
+    height: 45,
     velocityX: 0,
     velocityY: 0,
     speed: 0.5,        // acceleration
@@ -38,6 +39,7 @@ let player = {
         { x: 3,  y: 15,  w: 20, h: 5, color: headColors[3] }, // head 4
         { x: 4,  y: 20,  w: 18, h: 5, color: headColors[4] }, // lower head
         { x: 5,  y: 25,  w: 16, h: 20, color: headColors[5] }, // body
+        // { x: 5,  y: 45,  w: 16, h: 1, color: 'rgb(255,0,0)' }, // feet
     ],
     animationTime: 0,
     jumpAnim: 0,
