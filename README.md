@@ -2,6 +2,10 @@
 This game is going to be an indie platformer adventure game, featuring a [purple/orange/yellow/green/red/blue] character with the head of an upside-down trapezoid and the body of a rectangle. They will [embark/stumble upon/be dragged into] a(n) [epic quest/mysterious journey/waking nightmare] where some...things will...happen!
 
 ## Playing the game
+The link to the "game" is: 
+
+https://jamestblodgett.github.io/unnamed-game/
+
 ### Controls
  - Up/W/SPACE  =  Jump
  - Left/A      =  Move left
