@@ -138,7 +138,7 @@ function lantern({
     }) {
     
     const platforms = [];
-    // Post
+    // Top
     if (wall === false) {
             platforms.push({
             x,
@@ -164,6 +164,7 @@ function lantern({
             collide
         });
     }
+    // Slight curve on top
     platforms.push({
         x: x + 3,
         y: y - 2,
@@ -176,83 +177,69 @@ function lantern({
 
     // Center pillar
     platforms.push({ // Center beam
-        x: x + ((width / 2) - 2),
+        x: x + ((width / 2) - 1),
         y: y + 2,
-        width: 4,
-        height: 35,
+        width: 2,
+        height: 33,
         collide
     });
-    platforms.push({ // Center middle
-        x: x + ((width / 2) - 3),
-        y: height - 31 + y,
-        width: 6,
-        height: height/2,
+
+    platforms.push({ // Bulb top
+        x: x + ((width / 2) - 3.5),
+        y: y + 12,
+        width: 7,
+        height: 3,
         collide
     });
-    platforms.push({ // Center top
-        x: x + ((width / 2) - 4),
-        y: height - 31 + y,
-        width: 8,
-        height: height/4,
+    platforms.push({ // Bulb Main
+        x: x + ((width / 2) - 5),
+        y: y + 14,
+        width: 10,
+        height: 15,
+        collide
+    });
+    // platforms.push({ // Bulb Center (for a rounder look)
+    //     x: x + ((width / 2) - 6.5),
+    //     y: y + 16,
+    //     width: 13,
+    //     height: 11,
+    //     collide
+    // });
+    platforms.push({ // Bulb bottom
+        x: x + ((width / 2) - 3.5),
+        y: y + 28,
+        width: 7,
+        height: 3,
         collide
     });
 
     
-    // Bulb
-    platforms.push({ // Beam 1
-        x: x + ((width / 2) - 7),
-        y: height - 3 + y,
-        width: 14,
-        height: 4,
-        collide
-    });
-    platforms.push({ // Beam 2
-        x: x + ((width / 2) - 10),
-        y: height - 7 + y,
-        width: 20,
-        height: 2,
-        collide
-    });
-    platforms.push({ // Beam 3
-        x: x + ((width / 2) - 12),
-        y: height - 11 + y,
-        width: 24,
-        height: 2,
-        collide
-    });
-    platforms.push({ // Beam 4
-        x: x + ((width / 2) - 13),
-        y: height - 15 + y,
-        width: 26,
-        height: 2,
-        collide
-    });
-    platforms.push({ // Beam 5
-        x: x + ((width / 2) - 12),
-        y: height - 19 + y,
-        width: 24,
-        height: 2,
-        collide
-    });
-    platforms.push({ // Beam 6
-        x: x + ((width / 2) - 10),
-        y: height - 23 + y,
-        width: 20,
-        height: 2,
-        collide
-    });
-    platforms.push({ // Beam 7
-        x: x + ((width / 2) - 8),
-        y: height - 27 + y,
-        width: 16,
-        height: 2,
-        collide
-    });
-    platforms.push({ // Beam 8
-        x: x + ((width / 2) - 8),
-        y: height - 31 + y,
-        width: 16,
-        height: 2,
+    // Beams
+    let beamWidth = 8;
+    let beamSwitch = 2;
+    for (let i = y + 3; i < y + height; i += 4){
+        
+        
+        platforms.push({ // Beam
+            x: x + ((width / 2) - beamWidth),
+            y: i,
+            width: beamWidth * 2,
+            height: 1,
+            collide
+        });
+
+        // increment beamWidth
+        if (i > y + 12 || beamWidth > width) {
+            beamSwitch = -1;
+        }
+        beamWidth += beamSwitch;
+    }
+
+    platforms.push({ // Bottom
+        x: x + ((width / 2) - beamWidth),
+        y: y + 34,
+        width: beamWidth * 2,
+        height: 3,
         collide
     });
     return platforms;
@@ -704,7 +691,7 @@ function table({ x, y, width = 100, height = 40, chairs = null, collide = false}
 
     const chairWidth = 20;
     const chairHeight = height * 2;
-    const chairGap = 10;
+    const chairGap = 15;
 
     if (chairs === "left" || chairs === "both"){
         parts.push({ // Left leg
@@ -734,7 +721,7 @@ function table({ x, y, width = 100, height = 40, chairs = null, collide = false}
 
     if (chairs === "right" || chairs === "both"){
         parts.push({ // Left leg
-            x: x + width + chairWidth + chairGap,
+            x: x + width + chairWidth + chairGap/2,
             y: y - height,
             width: 5,
             height: chairHeight,
@@ -742,7 +729,7 @@ function table({ x, y, width = 100, height = 40, chairs = null, collide = false}
         });
 
         parts.push({ // Right leg
-            x: x + width + chairGap,
+            x: x + width + chairGap/2,
             y,
             width: 5,
             height: height,
@@ -750,7 +737,7 @@ function table({ x, y, width = 100, height = 40, chairs = null, collide = false}
         });
 
         parts.push({ // Seat
-            x: x + width + chairGap,
+            x: x + width + chairGap/2,
             y,
             width: chairWidth,
             height: 10,
@@ -761,7 +748,53 @@ function table({ x, y, width = 100, height = 40, chairs = null, collide = false}
     return parts;
 };
 
+function sign({ x, y, width = 30, height = 35, tilt = false, collide = false}) {
+    const parts = [];
+    const poleWidth = width/5
+    if (tilt) {
+        for (let i = 0; i < 10; i++){
+            parts.push(...slope({
+                x: x + width/2 + i - (poleWidth/2),
+                y: y - height/2,
+                width: poleWidth,
+                height: height / 2,
+                steps: 5,
+                direction: "right",
+                collide
+            }));
+        }
+        for (let i = 0 - width/2; i < 20; i++){
+            parts.push(...slope({
+                x: x + width/2 + i - 5,
+                y: y - height,
+                width: poleWidth,
+                height: height / 2,
+                steps: 5,
+                direction: "right",
+                collide
+            }));
+        }
+        
+    } else {
+        parts.push({
+            x: x + width/2 - poleWidth/2,
+            y: y - height/2,
+            width: poleWidth,
+            height: height/2,
+            collide
+        });
 
+        parts.push({
+            x,
+            y: y - height,
+            width: width,
+            height: height/2,
+            collide
+        })
+    }
+
+    return parts;
+}
 
 
 function createDoor({ x, y, width = 40, height = 60, targetLevel, spawnX = null, spawnY = null }) {

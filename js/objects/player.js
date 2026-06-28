@@ -38,7 +38,7 @@ let player = {
         { x: 2,  y: 10,  w: 22, h: 5, color: headColors[2] }, // head 3
         { x: 3,  y: 15,  w: 20, h: 5, color: headColors[3] }, // head 4
         { x: 4,  y: 20,  w: 18, h: 5, color: headColors[4] }, // lower head
-        { x: 5,  y: 25,  w: 16, h: 20, color: headColors[5] }, // body
+        { x: 5,  y: 25,  w: 16, h: 20, color: headColors[5] }, // body // Todo: will split out into more parts.
         // { x: 5,  y: 45,  w: 16, h: 1, color: 'rgb(255,0,0)' }, // feet
     ],
     animationTime: 0,

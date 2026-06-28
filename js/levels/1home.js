@@ -2,7 +2,6 @@ let inc = 325;
 const home = {
     name: "home",
     spawn: { x: 265, y: 255 }, // Main spawn
-    // spawn: {x: 1115, y: -97}, // Upstairs door
     platforms: [
         // Ground and outer walls
         ...standingPlatform({ x: -100, topY: 300, width: 950 }), // Ground1
@@ -54,13 +53,32 @@ const home = {
         ...wall({ x: 1210, y: -150, height: 99, width: 40, collide: false}),
         ...lantern({ x: 1250, y: -200, wall: "left" }),
 
-        ...stairs({direction: "left", x: 1350 + 320, y: 300, steps: 12 }), // Stairs outside
-        ...wall({ x: 1250, y: -52, height: 361, width: 80 }), // Hallway wall
-        ...floatingPlatform({ x: -200, y: -450, width: 1450, height: 150}),
+        // Hidden path
+        ...floatingPlatform({ x: 1250, y: -390, width: 2}),
+        ...floatingPlatform({x: -300, y: -380, width: 30, height: 10}),
+        ...(() => {
+            const _plats = [];
+            let platY = -380;
+            const pWidth = 30;
+            const pHeight = 10;
+            for (let platX = -300; platX >= - 900; platX -= 100) {
+                // _plats.push(...floatingPlatform(x: platX, y: y))
+                _plats.push(...floatingPlatform({ x: platX, y: platY, width: pWidth, height: pHeight, collide: true }));
+                platY += 50
+            }
+            return _plats;
+        })(),
+        ...standingPlatform({ x: -1300, topY: -50, width: 500}),
+        ...sign({x: -1270, y: -50}),
+
+
+        ...stairs({direction: "left", x: 1350 + 320, y: 301, steps: 12 }), // Stairs outside
+        ...wall({ x: 1250, y: -52, height: 360, width: 80 }), // outer wall (before stairs)
+        ...floatingPlatform({ x: -200, y: -450, width: 1450, height: 150}), // Roof
     ],
 
     doors: [
-        createDoor({ x: 2840, y: 240, targetLevel: "subway", spawnX: 50, spawnY: 268 })
+        createDoor({ x: 2840, y: 240, targetLevel: "subway", spawnX: 57, spawnY: 255 })
     ],
 
     texts: [
@@ -74,15 +92,7 @@ const home = {
         createText({type: "world", x: 1090, y: -175, lineX: 1155, lineY: -95, content: "S to pass through dark gray objects.", align: "center", maxDistance: 150}),
 
         createText({type: "player", x: 1120, y: -97, content: "\"Thanks, note!\"", align: "center", maxDistance: 20}),
-    // createText({type: "world", x: 1120, y: 160, content: "< + /\\", align: "center"}),
-    // createText({type: "world", x: 1120, y: 100, content: "> + /\\", align: "center"}),
-
-    // // Screams
-    // ...Array.from({ length: WORLD_BOTTOM }, (_, index) =>
-    //     createText({type: "world", x: 900, y: 425 + index * 25, content: "A", fadeSpeed: 0.05, align: "center" })
-    // ),
-
-    // createText({type: "world", x: 2860, y: 200, content: "V / S"}),
+        createText({type: "world", lineX: -1255, lineY: -50, x: -1255, y: -100, content: "Placeholder Text"})
     ]
 
 };

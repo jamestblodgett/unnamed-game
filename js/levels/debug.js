@@ -1,5 +1,5 @@
 let i = 100
-let cut = 120
+let cut = 200
 let t = i + 50
 const textY = 60
 const visY = -45
@@ -10,11 +10,17 @@ const debug = {
     name: "debug",
     spawn: { x: 0, y: -45 },
     platforms: [
+
+        ...sign({x: i + 20, y: 0, tilt: false, collide: true}),
+        i += cut,
+
+        ...sign({x: i + 20, y: 0, tilt: true, collide: true}),
+        i += cut,
         
         ...lantern({x: i + 40, y: -100, wall: false}),
         i += cut,
 
-        ...lantern({x: i + 40, y: -100, wall: "left"}),
+        ...lantern({x: i + 35, y: -100, wall: "left"}),
         i += cut,
 
         ...lantern({x: i + 40, y: -100, wall: "right"}),
@@ -111,6 +117,12 @@ const debug = {
 
     text: [
         // Object names
+        createText({type: "world", x: t, y: textY,  lineY: visY, content: "Sign", maxDistance: 200, color: textColor, font: textFont}),
+        t += cut,
+
+        createText({type: "world", x: t, y: textY,  lineY: visY, content: "Crooked Sign", maxDistance: 200, color: textColor, font: textFont}),
+        t += cut,
+
         createText({type: "world", x: t, y: textY,  lineY: visY, content: "No-wall lantern", maxDistance: 200, color: textColor, font: textFont}),
         t += cut,
 
