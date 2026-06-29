@@ -2,6 +2,7 @@ let inc = 325;
 const home = {
     name: "home",
     spawn: { x: 265, y: 255 }, // Main spawn
+    // spawn: {x: 1710, y: 0},
     platforms: [
         // Ground and outer walls
         ...standingPlatform({ x: -100, topY: 300, width: 950 }), // Ground1
@@ -44,7 +45,7 @@ const home = {
         ...slope({x:1230, y: -32, width: 20, height: 20, direction: "right", steps: 3, collide: false}),
 
         // Upstairs decoration
-        ...dresser({x: 1115, y: -153, shelves: 1}),
+        ...dresser({x: 900, y: -153, shelves: 1}),
         ...table({x: 667, y: -84, width: 100, height: 30, chairs: "both", collide: false}),
         ...shelf({x: 815, y: -174, width: 70, height: 120, books: true, collide: false}),
 
@@ -71,8 +72,8 @@ const home = {
         ...standingPlatform({ x: -1300, topY: -50, width: 500}),
         ...sign({x: -1270, y: -50}),
 
-
-        ...stairs({direction: "left", x: 1350 + 320, y: 301, steps: 12 }), // Stairs outside
+        // Outside
+        ...standingSlope({direction: "right", x: 1320, y: -52, steps: 100, width: 1260, height: 352, collide: false }), // Slope to stairs outside
         ...wall({ x: 1250, y: -52, height: 360, width: 80 }), // outer wall (before stairs)
         ...floatingPlatform({ x: -200, y: -450, width: 1450, height: 150}), // Roof
     ],
@@ -89,9 +90,10 @@ const home = {
     
         createText({type: "world", content: "W / Space", x: 900, y: 230, lineX: 900, lineY: WORLD_BOTTOM, fadeOnLine: false, maxDistance: 240}),
         createText({type: "player", x: 1030, y: 105, content: "Ugh, jumping.", align: "center", maxDistance: 80}),
-        createText({type: "world", x: 1090, y: -175, lineX: 1155, lineY: -95, content: "S to pass through dark gray objects.", align: "center", maxDistance: 150}),
 
-        createText({type: "player", x: 1120, y: -97, content: "\"Thanks, note!\"", align: "center", maxDistance: 20}),
+        createText({type: "world", x: 875, y: -175, lineX: 940, lineY: -95, content: "S to pass through dark gray objects.", align: "center", maxDistance: 150}),
+        createText({type: "player", x: 905, y: -97, content: "\"Thanks, note!\"", align: "center", maxDistance: 20}),
+
         createText({type: "world", lineX: -1255, lineY: -50, x: -1255, y: -100, content: "Placeholder Text"})
     ]
 

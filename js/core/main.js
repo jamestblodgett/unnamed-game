@@ -16,6 +16,7 @@ function gameLoop() {
 
     drawPlatforms(ctx);
     drawDoors(ctx);
+    drawPlayerVariants(ctx);
     drawTexts(ctx);
     drawPlayer(ctx);
     updateDebug();

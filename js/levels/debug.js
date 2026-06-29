@@ -10,6 +10,14 @@ const debug = {
     name: "debug",
     spawn: { x: 0, y: -45 },
     platforms: [
+        ...standingSlope({x: i, y: 0, width: 100, height: -100}),
+        i += cut,
+
+        ...standingSlope({x: i, y: -100, width: 100, height: 100}),
+        i += cut,
+
+        ...standingSlope({x: i, y: -100, width: 100, height: 100, direction: "left"}),
+        i += cut,
 
         ...sign({x: i + 20, y: 0, tilt: false, collide: true}),
         i += cut,
@@ -117,6 +125,15 @@ const debug = {
 
     text: [
         // Object names
+        createText({type: "world", x: t, y: textY,  lineY: visY, content: "Upside-down right slope", maxDistance: 200, color: textColor, font: textFont}),
+        t += cut,
+
+        createText({type: "world", x: t, y: textY,  lineY: visY, content: "Right Slope", maxDistance: 200, color: textColor, font: textFont}),
+        t += cut,
+
+        createText({type: "world", x: t, y: textY,  lineY: visY, content: "Left Slope", maxDistance: 200, color: textColor, font: textFont}),
+        t += cut,
+
         createText({type: "world", x: t, y: textY,  lineY: visY, content: "Sign", maxDistance: 200, color: textColor, font: textFont}),
         t += cut,
 

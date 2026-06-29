@@ -1,6 +1,6 @@
 let currentLevel = null;
 let currentLevelIndex = 0;
-const allLevels = [home, subway, debug];
+const allLevels = [home, subway, playerTest, debug];
 
 function loadLevel(levelData, spawnX = null, spawnY = null) {
     // Fallback if level is missing or undefined

@@ -1,6 +1,6 @@
 function generateGradientColors(startR, startG, startB, decrement, count) {
     const colors = [];
-    let r = startR
+    let r = startR;
     let g = startG;
     let b = startB;
 
@@ -14,36 +14,124 @@ function generateGradientColors(startR, startG, startB, decrement, count) {
     return colors;
 }
 
-const testColor = 'rgb(195, 0, 255)'
-const headColors = generateGradientColors(195, 0, 255, 25, 7);
+// Default player configuration values.
+const DEFAULT_PLAYER_COLOR = "RED";
+const DEFAULT_PLAYER_WIDTH = 26;
+const DEFAULT_PLAYER_HEIGHT = 45;
 
+// Base definitions for the player body parts.
+// Each entry is a relative rectangle for the player's stacked body segments.
+const PLAYER_PART_DEFINITIONS = [
+    { x: 0,  y: 0,  w: 26, h: 5 },
+    { x: 1,  y: 5,  w: 24, h: 5 },
+    { x: 2,  y: 10, w: 22, h: 5 },
+    { x: 3,  y: 15, w: 20, h: 5 },
+    { x: 4,  y: 20, w: 18, h: 5 },
+    { x: 5,  y: 25, w: 16, h: 20 },
+];
 
-
-let player = {
-    x: 275,
-    y: 50,
-    width: 26,
-    height: 45,
-    velocityX: 0,
-    velocityY: 0,
-    speed: 0.5,        // acceleration
-    maxSpeed: 4,       // top running speed
-    friction: 0.9,     // friction when on ground
-    airFriction: 0.95, // friction in air (less)
-    jumpForce: 11,
-    onGround: false,
-    parts: [
-        { x: 0,  y: 0,  w: 26, h: 5, color: headColors[0]}, // head
-        { x: 1,  y: 5,  w: 24, h: 5, color: headColors[1] }, // head 2
-        { x: 2,  y: 10,  w: 22, h: 5, color: headColors[2] }, // head 3
-        { x: 3,  y: 15,  w: 20, h: 5, color: headColors[3] }, // head 4
-        { x: 4,  y: 20,  w: 18, h: 5, color: headColors[4] }, // lower head
-        { x: 5,  y: 25,  w: 16, h: 20, color: headColors[5] }, // body // Todo: will split out into more parts.
-        // { x: 5,  y: 45,  w: 16, h: 1, color: 'rgb(255,0,0)' }, // feet
-    ],
-    animationTime: 0,
-    jumpAnim: 0,
+// Per-color gradient step sizes.
+// Use this object when generating player head colors.
+const PLAYER_COLOR_DECAYS = {
+    RED: 30,
+    ORANGE: 26,
+    YELLOW: 28,
+    GREEN: 27,
+    BLUE: 21,
+    PINK: 25,
+    PURPLE: 21,
+    WHITE: 25,
+    LIGHTGREY: 25,
+    MIDGREY: 25,
+    DARKGREY: 25,
+    BLACK: 25,
+    BROWN: 25,
+    CYAN: 25,
 };
+
+// Normalize any color input into a canonical uppercase color name.
+// Accepts strings or objects with a name property.
+function normalizePlayerColorName(colorNameOrObj) {
+    if (!colorNameOrObj) return DEFAULT_PLAYER_COLOR;
+    if (typeof colorNameOrObj === 'string') return colorNameOrObj.trim().toUpperCase();
+    if (typeof colorNameOrObj === 'object') {
+        if (colorNameOrObj.name) return colorNameOrObj.name.trim().toUpperCase();
+        if (colorNameOrObj.color && colorNameOrObj.r != null) return DEFAULT_PLAYER_COLOR;
+    }
+    return DEFAULT_PLAYER_COLOR;
+}
+
+// Look up a player color entry from PLAYER_COLORS.
+// If the passed value is already a full color entry object, return it unchanged.
+function getPlayerColorEntry(colorNameOrObj) {
+    if (typeof colorNameOrObj === 'object' && colorNameOrObj.color && colorNameOrObj.name) {
+        return colorNameOrObj;
+    }
+
+    const normalizedName = normalizePlayerColorName(colorNameOrObj);
+    return PLAYER_COLORS.find(entry => entry.name === normalizedName)
+        || PLAYER_COLORS.find(entry => entry.name === DEFAULT_PLAYER_COLOR);
+}
+
+// Get the gradient decrement amount for a given player color.
+function getPlayerColorDecrement(colorNameOrObj) {
+    const name = normalizePlayerColorName(colorNameOrObj);
+    return PLAYER_COLOR_DECAYS[name] || 25;
+}
+
+// Build the player body part array from generated head colors.
+function createPlayerParts(headColors) {
+    return PLAYER_PART_DEFINITIONS.map((def, index) => ({
+        ...def,
+        color: headColors[index] || headColors[headColors.length - 1] || 'rgb(255, 255, 255)'
+    }));
+}
+
+// Generate the head gradient colors for the requested color.
+function getPlayerHeadColors(colorNameOrObj) {
+    const entry = getPlayerColorEntry(colorNameOrObj);
+    const decrement = getPlayerColorDecrement(entry.name);
+    return generateGradientColors(entry.color.r, entry.color.g, entry.color.b, decrement, PLAYER_PART_DEFINITIONS.length + 1);
+}
+
+// Create a fresh player object instance with shared default shape and color behavior.
+function createPlayerInstance(colorNameOrObj, x = 0, y = 0) {
+    const colorEntry = getPlayerColorEntry(colorNameOrObj);
+    const headColors = getPlayerHeadColors(colorEntry.name);
+
+    return {
+        name: colorEntry.name,
+        x,
+        y,
+        width: DEFAULT_PLAYER_WIDTH,
+        height: DEFAULT_PLAYER_HEIGHT,
+        velocityX: 0,
+        velocityY: 0,
+        onGround: false,
+        speed: 0.5,
+        maxSpeed: 4,
+        friction: 0.9,
+        airFriction: 0.95,
+        jumpForce: 11,
+        animationTime: 0,
+        jumpAnim: 0,
+        parts: createPlayerParts(headColors),
+    };
+}
+
+// Helper for playerTest.js to create a variant entry using the shared factory.
+function makePlayerVariant(colorObj, x = 0, y = 0) {
+    return createPlayerInstance(colorObj, x, y);
+}
+
+// Backwards compatibility helper used by legacy level scripts.
+function createPlayerVariant(colorObj, x = 0, y = 0) {
+    return makePlayerVariant(colorObj, x, y);
+}
+
+// The actual active player uses DEFAULT_PLAYER_COLOR unless overridden.
+const ACTIVE_PLAYER_COLOR = DEFAULT_PLAYER_COLOR;
+let player = createPlayerInstance(ACTIVE_PLAYER_COLOR, 275, 50);
 
 player.hitbox = {
     xOffset: 0,
@@ -133,22 +221,22 @@ function getPlayerCollisionRects(baseX = player.x, baseY = player.y) {
     }];
 }
 
-function drawPlayer(ctx) {
+function drawPlayer(ctx, playerObject = player) {
     // Head tilts whenever moving horizontally (ground or air)
-    const moving = Math.abs(player.velocityX) > 0.2;
-    const dir = moving ? Math.sign(player.velocityX) : 0;
-    const vx = player.velocityX;
+    const moving = Math.abs(playerObject.velocityX) > 0.2;
+    const dir = moving ? Math.sign(playerObject.velocityX) : 0;
+    const vx = playerObject.velocityX;
 
     let baseOffsets = [3, 2.5, 2, 1.5, 1];
     let vertOffsets = [11, 9, 7, 5, 3];
 
     if (moving) {
-        const speedScale = Math.min(Math.abs(vx) / player.maxSpeed, 1);
+        const speedScale = Math.min(Math.abs(vx) / (playerObject.maxSpeed || player.maxSpeed), 1);
         baseOffsets = baseOffsets.map(b => b * speedScale);
     }
 
-    for (let i = 0; i < player.parts.length; i++) {
-        const part = player.parts[i];
+    for (let i = 0; i < playerObject.parts.length; i++) {
+        const part = playerObject.parts[i];
         const isHead = i <= 4;
 
         let offsetX = part.x;
@@ -161,17 +249,26 @@ function drawPlayer(ctx) {
 
         // === HEAD SEPARATION (jump animation) ===
         if (isHead) {
-            const bobScale = player.jumpAnim / 8; // 0 → 1
+            const bobScale = (playerObject.jumpAnim || 0) / 8; // 0 → 1
             offsetY = part.y - vertOffsets[i] * bobScale;
         }
 
         ctx.fillStyle = part.color;
 
         ctx.fillRect(
-            Math.round(player.x + offsetX - camera.x),
-            Math.round(player.y + offsetY - camera.y),
+            Math.round(playerObject.x + offsetX - camera.x),
+            Math.round(playerObject.y + offsetY - camera.y),
             part.w,
             part.h
         );
+    }
+}
+
+function drawPlayerVariants(ctx) {
+    // Draw any extra test players defined by the current level.
+    // These are visual-only variants and do not participate in player input.
+    if (!currentLevel?.playerVariants || !Array.isArray(currentLevel.playerVariants)) return;
+    for (const variant of currentLevel.playerVariants) {
+        drawPlayer(ctx, variant);
     }
 }

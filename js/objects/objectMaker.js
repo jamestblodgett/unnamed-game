@@ -269,6 +269,46 @@ function slope({ x, y, width, height, direction = "right", steps = 10, collide =
     return segments;
 }
 
+function standingSlope({
+    x,
+    y,
+    width,
+    height,
+    direction = "right",
+    steps = 10,
+    collide = true
+}) {
+    const segments = [];
+
+    const segmentWidth = width / steps;
+
+    for (let i = 0; i < steps; i++) {
+        // Width stays constant per pillar
+        const w = segmentWidth;
+
+        // Height grows downward
+        const h = height * ((steps - i) / steps);
+
+        // X shifts inward each step
+        const segX = direction === "right"
+            ? x + i * segmentWidth
+            : x + width - (i + 1) * segmentWidth;
+
+        // Y stays at the top
+        const segY = y + i * (height / steps);
+
+        segments.push({
+            x: segX,
+            y: segY,
+            width: w,
+            height: h,
+            collide
+        });
+    }
+
+    return segments;
+}
+
 function bed({ x, y, width = 100, height = 32, direction = "left", collide = false}) {
     const parts = [];
     parts.push({ // left leg
