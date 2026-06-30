@@ -1,10 +1,12 @@
-# A [game/story]
-This game is going to be an indie platformer adventure game, featuring a [purple/orange/yellow/green/red/blue] character with the head of an upside-down trapezoid and the body of a rectangle. They will [embark/stumble upon/be dragged into] a(n) [epic quest/mysterious journey/waking nightmare] where some...things will...happen!
+# Game overiew
+This game is going to be an indie platformer adventure game, featuring a purple character with the head of an upside-down trapezoid and the body of a rectangle.
 
 ## Playing the game
-The link to the "game" is: 
+The link to the game thus-far is:
 
 https://jamestblodgett.github.io/unnamed-game/
+
+DISCLAIMER: The game is in NO WAY ready to play. Don't be disappointed.
 
 ### Controls
  - Up/W/SPACE  =  Jump
@@ -18,17 +20,32 @@ https://jamestblodgett.github.io/unnamed-game/
  - F/K         = Phase/Dash
 
 ## Character
-The character, [name], is a [ordinary, special] person who lives on their own in the [forest/city]. Their adventure begins [in a dream/one morning].
-
-They [are cursed/have hidden powers/aren't what they seem].
+The Character, [name], is an ordinary person who works a day job at a library.
+They are a purple rectangle with a trapezoidal head, which is actually a stack of 5 rectangles.
 
 ## Story
-This game features conflicting paths about what is real and what isn't, and about finding [truth/their way home/their siblings?]
+After a disturbing dream, you fall into a quiet, strange, broken world built from too-familiar pieces of your own. Guided by a voice that promises a way home, you set out to find the Bearers, each holding one of 6 powers you’ll need to return safely.
 
+Rush,
 
+Phase,
 
+Strike,
 
+Shield,
 
+Climb,
 
+Bond,
 
-:)
+...
+
+and Kill.
+
+This world is shaped by seven powers, each representing something unique. Seven Paths. Seven Powers.
+
+But only one can decide the ending.
+
+---------------------------------
+
+### [Game planning](TODO.md)

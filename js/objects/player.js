@@ -15,7 +15,7 @@ function generateGradientColors(startR, startG, startB, decrement, count) {
 }
 
 // Default player configuration values.
-const DEFAULT_PLAYER_COLOR = "RED";
+const DEFAULT_PLAYER_COLOR = "PURPLE";
 const DEFAULT_PLAYER_WIDTH = 26;
 const DEFAULT_PLAYER_HEIGHT = 45;
 
