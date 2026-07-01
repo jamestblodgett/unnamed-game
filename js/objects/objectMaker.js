@@ -311,7 +311,7 @@ function standingSlope({
         segments.push({
             x: segX,
             y: segY,
-            width: w,
+            width: w + 1,
             height: h,
             collide
         });
