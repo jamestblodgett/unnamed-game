@@ -23,10 +23,15 @@
 
 ## Menus
 - Main menu
+    - Proper title
+    - Background variation
+    <!-- - Settings option -->
+    - Animation?
+    - Text-cutscene
 - Settings
     - Colorblind mode
     - Music/sfx
-- Menu animation
+    - Control changing | variables added
 
 ## SFX
 - Talk to Ronin for music

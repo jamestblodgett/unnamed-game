@@ -16,6 +16,7 @@ const mouse = {
 const gameCanvas = document.getElementById("gameCanvas");
 
 window.addEventListener("mousemove", (e) => {
+    if (gameState !== "play") return;
     if (!gameCanvas) return;
     const rect = gameCanvas.getBoundingClientRect();
     mouse.x = Math.max(0, Math.min(gameCanvas.width, e.clientX - rect.left));
@@ -23,10 +24,11 @@ window.addEventListener("mousemove", (e) => {
 });
 
 window.addEventListener("keydown", (e) => {
-    if (e.code === "ArrowLeft" || e.code === "KeyA") keys.left = true;
-    if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = true;
-    if (e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space") keys.up = true;
-    if (e.code === "ArrowDown" || e.code === "KeyS") {
+    if (gameState !== "play") return;
+    if (e.code === LEFT || e.code === "ArrowLeft") keys.left = true;
+    if (e.code === RIGHT || e.code === "ArrowRight") keys.right = true;
+    if (e.code === UP || e.code === "ArrowUp" ||  e.code === "Space") keys.up = true;
+    if (e.code === DOWN || e.code === "ArrowDown") {
         if (!keys.down) {
             keys.downPressed = true;
         }
@@ -35,10 +37,11 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("keyup", (e) => {
-    if (e.code === "ArrowLeft" || e.code === "KeyA") keys.left = false;
-    if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = false;
-    if (e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space") keys.up = false;
-    if (e.code === "ArrowDown" || e.code === "KeyS") keys.down = false;
+    if (gameState !== "play") return;
+    if (e.code === LEFT || e.code === "ArrowLeft") keys.left = false;
+    if (e.code === RIGHT || e.code === "ArrowRight") keys.right = false;
+    if (e.code === UP || e.code === "ArrowUp" ||  e.code === "Space") keys.up = false;
+    if (e.code === DOWN || e.code === "ArrowDown") keys.down = false;
 });
 
 function downOnce() {
@@ -47,6 +50,7 @@ function downOnce() {
     return pressed;
 }
 
+// Level skip
 window.addEventListener("keydown", (e) => {
     if (e.code === "KeyN") nextLevel();
     if (e.code === "KeyP") previousLevel();

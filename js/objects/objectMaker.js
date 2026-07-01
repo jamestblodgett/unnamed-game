@@ -281,21 +281,32 @@ function standingSlope({
     const segments = [];
 
     const segmentWidth = width / steps;
+    const stepHeight = height / steps;
 
     for (let i = 0; i < steps; i++) {
         // Width stays constant per pillar
         const w = segmentWidth;
 
-        // Height grows downward
-        const h = height * ((steps - i) / steps);
+        // Raw height for this pillar (can be negative if the caller passed a negative height)
+        const rawH = height * ((steps - i) / steps);
+        const rawSegY = y + i * stepHeight;
+
+        // Normalize so we always emit a positive height and a correct top Y
+        let h = rawH;
+        let segY = rawSegY;
+        if (h < 0) {
+            // If height is negative, the rectangle should start higher (rawSegY + h)
+            segY = rawSegY + h; // since h is negative this moves the y upward
+            h = -h;
+        }
 
         // X shifts inward each step
         const segX = direction === "right"
             ? x + i * segmentWidth
             : x + width - (i + 1) * segmentWidth;
 
-        // Y stays at the top
-        const segY = y + i * (height / steps);
+        // Skip degenerate segments
+        if (w <= 0 || h <= 0) continue;
 
         segments.push({
             x: segX,

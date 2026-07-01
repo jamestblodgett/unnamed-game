@@ -1,9 +1,10 @@
 Folder PATH listing
-Volume serial number is 000000E5 F8F2:64AF
+Volume serial number is 0000008B F8F2:64AF
 C:.
 |   filetree.txt
 |   index.html
 |   README.md
+|   TODO.md
 |   
 +---assets
 |   +---images
@@ -12,22 +13,33 @@ C:.
 +---css
 |       styles.css
 |       
++---gameInfo
+|       powers.md
+|       storyPlans.md
+|       
 \---js
     +---core
     |       camera.js
     |       core.txt
     |       input.js
     |       main.js
+    |       menu.js
     |       
     +---gameLogic
     |       collision.js
+    |       colors.js
+    |       doorLogic.js
     |       levelLoader.js
     |       platforms.js
     |       
     +---levels
-    |       introLevel.js
-    |       level1.js
+    |       1home.js
+    |       2subway.js
+    |       debug.js
+    |       playerTest.js
     |       
     \---objects
+            objectMaker.js
             player.js
+            text.js
             

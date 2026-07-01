@@ -1,25 +1,48 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const debugPanel = document.getElementById("debugPanel");
-const GLOBAL_DEBUG = false;
-
-loadLevel(allLevels[currentLevelIndex]);
 
 function gameLoop() {
+    if (gameState === "play" && currentLevel === null) {
+        startGame();
+    }
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    updatePlayer();
-    checkCollisions();
-    checkFallReset();
-    checkDoorEntry();
-    updateCamera();
+    if (gameState === "menu") {
+        drawMenu(ctx);
+        updateDebug();
+    } else if (gameState === "play") {
+        updatePlayer();
+        checkCollisions();
+        checkFallReset();
+        checkDoorEntry();
+        updateCamera();
 
-    drawPlatforms(ctx);
-    drawDoors(ctx);
-    drawPlayerVariants(ctx);
-    drawTexts(ctx);
-    drawPlayer(ctx);
-    updateDebug();
+        drawPlatforms(ctx);
+        drawDoors(ctx);
+        drawPlayerVariants(ctx);
+        drawTexts(ctx);
+        drawPlayer(ctx);
+        updateDebug();
+    } else if (gameState === "pause") {
+        drawPlatforms(ctx);
+        drawDoors(ctx);
+        drawPlayerVariants(ctx);
+        drawTexts(ctx);
+        drawPlayer(ctx);
+        updateDebug();
+
+        drawPauseMenu(ctx);
+    } else if (gameState === "settings") {
+        drawPlatforms(ctx);
+        drawDoors(ctx);
+        drawPlayerVariants(ctx);
+        drawTexts(ctx);
+        drawPlayer(ctx);
+        updateDebug();
+        drawSettingsMenu(ctx);
+    }
 
     requestAnimationFrame(gameLoop);
 }
@@ -33,8 +56,8 @@ function updateDebug() {
     const mouseLevelY = (mouseScreenY !== null && typeof camera !== "undefined") ? mouseScreenY + camera.y : null;
     const mouseX = mouseLevelX !== null ? mouseLevelX.toFixed(0) : "n/a";
     const mouseY = mouseLevelY !== null ? mouseLevelY.toFixed(0) : "n/a";
-    const downPressed = downOnce();
-    debugPanel.textContent = `player.x: ${player.x.toFixed(0)} player.y: ${player.y.toFixed(0)} mouse.x: ${mouseX} mouse.y: ${mouseY} level: ${levelName} index: ${currentLevelIndex} downPressed: ${downPressed}`;
+    // const debugGameState = gameState;
+    debugPanel.textContent = `player.x: ${player.x.toFixed(0)} player.y: ${player.y.toFixed(0)} mouse.x: ${mouseX} mouse.y: ${mouseY} level: ${levelName} index: ${currentLevelIndex} gameState: ${gameState}`;
 }
 
 // FUNCTIONS

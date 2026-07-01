@@ -112,7 +112,7 @@ function createPlayerInstance(colorNameOrObj, x = 0, y = 0) {
         maxSpeed: 4,
         friction: 0.9,
         airFriction: 0.95,
-        jumpForce: 11,
+        jumpForce: 11, // 14 After Climb, 11 normally.
         animationTime: 0,
         jumpAnim: 0,
         parts: createPlayerParts(headColors),

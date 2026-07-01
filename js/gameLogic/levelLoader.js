@@ -1,6 +1,6 @@
 let currentLevel = null;
 let currentLevelIndex = 0;
-const allLevels = [home, subway, playerTest, debug];
+const allLevels = [dream, home, subway, playerTest, debug];
 
 function loadLevel(levelData, spawnX = null, spawnY = null) {
     // Fallback if level is missing or undefined
@@ -16,6 +16,7 @@ function loadLevel(levelData, spawnX = null, spawnY = null) {
     }
 
     currentLevel = levelData;
+    activeLevel = currentLevel;
 
     // Determine spawn point:
     // 1. Door-provided spawn (highest priority)
