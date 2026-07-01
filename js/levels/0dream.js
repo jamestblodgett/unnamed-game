@@ -5,16 +5,20 @@ const dream = {
     spawn: {x: 0, y: -45}, // Main
     // spawn: {x: -850, y: -67}, // Temporary
     platforms: [
-        ...standingPlatform({x: -900, topY: 0, width: 1000}),
+        ...standingPlatform({x: -900, topY: 0, width: 1000}), // Start Ground
         ...sign({x: -30, y: 0}),
-        ...standingPlatform({x: 99, topY: -200, width: 401}),
-        ...standingSlope({x: 60, y: -299, width: 439, height: 100, steps: 40, direction: "left"}),
-        ...standingSlope({x: 60, y: -119, width: 40, height: -80, steps: 10, direction: "left"}),
-        ...floatingPlatform({x: -400, y: -3, width: 200, height: 4}),
+        ...standingPlatform({x: 99, topY: -200, width: 401}), // Back wall
+        ...standingSlope({x: 60, y: -299, width: 439, height: 100, steps: 40, direction: "left"}), // Back slope
+        ...standingSlope({x: 60, y: -119, width: 40, height: -80, steps: 10, direction: "left"}), // Curving for slope
+        
+        ...floatingPlatform({x: -400, y: -3, width: 200, height: 4}), // First bump
         ...floatingPlatform({x: -350, y: -6, width: 60, height: 4}),
         // Placeholder tree?
-        ...floatingPlatform({x: -700, y: -3, width: 180, height: 4}),
+
+        ...floatingPlatform({x: -700, y: -3, width: 180, height: 4}), // Second bump
         ...floatingPlatform({x: -800, y: -6, width: 180, height: 7}),
+
+        // Third bump/slope up
         ...(() => {
             const platforms = [];
             for (let i = 0; i < 9; i++) {
@@ -29,7 +33,7 @@ const dream = {
             }
             return platforms;
         })(),
-        ...standingPlatform({x: -1500, topY: -54, width: 601}),
+        ...standingPlatform({x: -1500, topY: -54, width: 601}), // Final ground
 
     ],
     doors: [
@@ -37,7 +41,7 @@ const dream = {
         createDoor({x: -1470, y: -114, targetLevel: "home", spawnX: 265, spawnY: 255})
     ],
     texts: [
-        createText({type: "world", x: 13, y: -85, lineX: -0, lineY: -35, content: "<---"}),
+        createText({content: "<---", type: "world", x: 13, y: -85, lineX: -0, lineY: -35}),
     ],
     playerVariants: [
 
