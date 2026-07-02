@@ -1,6 +1,6 @@
 const GLOBAL_DEBUG = false;
 
-let gameState = "menu"; // menu, play, settings, or pause
+let gameState = "play"; // menu, play, settings, or pause
 if (true){
 
 let startUp = false;
@@ -12,13 +12,13 @@ let startUp = false;
 // CONTROLS           |
 // ====================
 
-let UP = "ArrowUp";
+let UP = "KeyW";
 
-let DOWN = "ArrowDown";
+let DOWN = "KeyS";
 
-let LEFT = "ArrowLeft";
+let LEFT = "KeyA";
 
-let RIGHT = "ArrowRight";
+let RIGHT = "KeyD";
 
 let RUSH = "KeyZ";
 

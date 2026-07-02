@@ -49,6 +49,155 @@ const PLAYER_COLOR_DECAYS = {
     CYAN: 25,
 };
 
+function createCharacterPart(definition = {}) {
+    return {
+        x: 0,
+        y: 0,
+        w: 0,
+        h: 0,
+        color: 'rgb(255, 255, 255)',
+        ...definition
+    };
+}
+
+function createCharacterModel(options = {}) {
+    const animations = {
+        tilt: { enabled: false, strength: 2, speed: 1 },
+        bob: { enabled: false, strength: 1, speed: 1 },
+        ...(options.animations || {})
+    };
+
+    animations.tilt = {
+        ...(animations.tilt || {}),
+        ...((options.animations && options.animations.tilt) || {})
+    };
+
+    animations.bob = {
+        ...(animations.bob || {}),
+        ...((options.animations && options.animations.bob) || {})
+    };
+
+    return {
+        name: options.name || 'character',
+        width: options.width || DEFAULT_PLAYER_WIDTH,
+        height: options.height || DEFAULT_PLAYER_HEIGHT,
+        parts: Array.isArray(options.parts)
+            ? options.parts.map(part => createCharacterPart(part))
+            : [],
+        animations,
+        properties: {
+            speed: 0.5,
+            maxSpeed: 4,
+            friction: 0.9,
+            airFriction: 0.95,
+            jumpForce: 11,
+            ...(options.properties || {})
+        },
+        hitbox: options.hitbox || null
+    };
+}
+
+function resolveCharacterModel(modelOrDefinition) {
+    if (modelOrDefinition && Array.isArray(modelOrDefinition.parts) && modelOrDefinition.name) {
+        return modelOrDefinition;
+    }
+
+    return createCharacterModel({
+        name: modelOrDefinition && modelOrDefinition.name ? modelOrDefinition.name : 'character',
+        width: modelOrDefinition && modelOrDefinition.width ? modelOrDefinition.width : DEFAULT_PLAYER_WIDTH,
+        height: modelOrDefinition && modelOrDefinition.height ? modelOrDefinition.height : DEFAULT_PLAYER_HEIGHT,
+        parts: modelOrDefinition && Array.isArray(modelOrDefinition.parts) ? modelOrDefinition.parts : []
+    });
+}
+
+function createCharacterInstance(modelOrDefinition, x = 0, y = 0, overrides = {}) {
+    const sourceModel = resolveCharacterModel(modelOrDefinition);
+    const baseParts = Array.isArray(sourceModel.parts) ? sourceModel.parts.map(part => ({ ...part })) : [];
+    const instance = {
+        model: sourceModel,
+        name: sourceModel.name,
+        x,
+        y,
+        width: sourceModel.width,
+        height: sourceModel.height,
+        velocityX: 0,
+        velocityY: 0,
+        onGround: false,
+        parts: baseParts,
+        state: {
+            animationTime: 0,
+            jumpAnim: 0,
+            tilt: 0,
+            bob: 0
+        },
+        properties: { ...(sourceModel.properties || {}) },
+        ...overrides
+    };
+
+    if (!Array.isArray(instance.parts) || !instance.parts.length) {
+        instance.parts = baseParts;
+    }
+
+    Object.keys(instance.properties).forEach(key => {
+        if (typeof instance[key] === 'undefined') {
+            instance[key] = instance.properties[key];
+        }
+    });
+
+    if (sourceModel.hitbox) {
+        instance.hitbox = { ...sourceModel.hitbox };
+    }
+
+    return instance;
+}
+
+function applyCharacterProperties(character, properties = {}) {
+    if (!character) return character;
+    if (!character.properties) {
+        character.properties = {};
+    }
+
+    Object.assign(character.properties, properties);
+
+    Object.keys(properties).forEach(key => {
+        character[key] = properties[key];
+    });
+
+    return character;
+}
+
+function updateCharacterAnimation(character, delta = 1) {
+    if (!character) return character;
+    const state = character.state || (character.state = {});
+    const moving = Math.abs(character.velocityX) > 0.2;
+    const dir = moving ? Math.sign(character.velocityX) : 0;
+    const tiltAnimation = character.model && character.model.animations && character.model.animations.tilt;
+    const bobAnimation = character.model && character.model.animations && character.model.animations.bob;
+
+    if (moving && tiltAnimation && tiltAnimation.enabled) {
+        const strength = tiltAnimation.strength || 2;
+        state.tilt = dir * strength;
+    } else {
+        state.tilt = 0;
+    }
+
+    if (character.onGround && Math.abs(character.velocityX) > 0.2) {
+        state.animationTime += 0.2 * delta;
+    } else {
+        state.animationTime = 0;
+    }
+
+    if (!character.onGround) {
+        const jumpGain = (bobAnimation && bobAnimation.speed) ? bobAnimation.speed : 1;
+        state.jumpAnim = Math.min((state.jumpAnim || 0) + 0.5 * jumpGain * delta, 8);
+    } else {
+        const jumpDecay = (bobAnimation && bobAnimation.speed) ? bobAnimation.speed : 1;
+        state.jumpAnim = Math.max((state.jumpAnim || 0) - 1 * jumpDecay * delta, 0);
+    }
+
+    return character;
+}
+
 // Normalize any color input into a canonical uppercase color name.
 // Accepts strings or objects with a name property.
 function normalizePlayerColorName(colorNameOrObj) {
@@ -98,25 +247,25 @@ function getPlayerHeadColors(colorNameOrObj) {
 function createPlayerInstance(colorNameOrObj, x = 0, y = 0) {
     const colorEntry = getPlayerColorEntry(colorNameOrObj);
     const headColors = getPlayerHeadColors(colorEntry.name);
-
-    return {
+    const model = createCharacterModel({
         name: colorEntry.name,
-        x,
-        y,
         width: DEFAULT_PLAYER_WIDTH,
         height: DEFAULT_PLAYER_HEIGHT,
-        velocityX: 0,
-        velocityY: 0,
-        onGround: false,
-        speed: 0.5,
-        maxSpeed: 4,
-        friction: 0.9,
-        airFriction: 0.95,
-        jumpForce: 11, // 14 After Climb, 11 normally.
-        animationTime: 0,
-        jumpAnim: 0,
         parts: createPlayerParts(headColors),
-    };
+        animations: {
+            tilt: { enabled: true, strength: 2.5, speed: 1 },
+            bob: { enabled: true, strength: 1, speed: 1 }
+        },
+        properties: {
+            speed: 0.5,
+            maxSpeed: 4,
+            friction: 0.9,
+            airFriction: 0.95,
+            jumpForce: 11
+        }
+    });
+
+    return createCharacterInstance(model, x, y);
 }
 
 // Helper for playerTest.js to create a variant entry using the shared factory.
@@ -141,53 +290,38 @@ player.hitbox = {
 };
 
 function updatePlayer() {
-    // Horizontal acceleration
+    const speed = typeof player.speed !== 'undefined' ? player.speed : (player.properties && player.properties.speed);
+    const friction = typeof player.friction !== 'undefined' ? player.friction : (player.properties && player.properties.friction);
+    const airFriction = typeof player.airFriction !== 'undefined' ? player.airFriction : (player.properties && player.properties.airFriction);
+    const maxSpeed = typeof player.maxSpeed !== 'undefined' ? player.maxSpeed : (player.properties && player.properties.maxSpeed);
+    const jumpForce = typeof player.jumpForce !== 'undefined' ? player.jumpForce : (player.properties && player.properties.jumpForce);
+
     if (keys.left) {
-        player.velocityX -= player.speed;
+        player.velocityX -= speed;
     }
     if (keys.right) {
-        player.velocityX += player.speed;
+        player.velocityX += speed;
     }
 
-    // Apply friction
     if (player.onGround) {
-        player.velocityX *= player.friction;
+        player.velocityX *= friction;
     } else {
-        player.velocityX *= player.airFriction;
+        player.velocityX *= airFriction;
     }
 
-    // Clamp max speed
-    if (player.velocityX > player.maxSpeed) player.velocityX = player.maxSpeed;
-    if (player.velocityX < -player.maxSpeed) player.velocityX = -player.maxSpeed;
+    if (player.velocityX > maxSpeed) player.velocityX = maxSpeed;
+    if (player.velocityX < -maxSpeed) player.velocityX = -maxSpeed;
 
-    // Jump
     if (keys.up && player.onGround) {
-        player.velocityY = -player.jumpForce;
+        player.velocityY = -jumpForce;
         player.onGround = false;
     }
 
-    // Gravity
     player.velocityY += 0.5;
-
-    // Apply movement
     player.x += player.velocityX;
     player.y += player.velocityY;
 
-    // Update animation timer
-    if (player.onGround && Math.abs(player.velocityX) > 0.2) {
-        player.animationTime += 0.2;
-    } else {
-        player.animationTime = 0; // reset when idle or in air
-    }
-
-    // Jump bob animation
-    if (!player.onGround) {
-        // Rising effect while in air
-        player.jumpAnim = Math.min(player.jumpAnim + 0.5, 8);
-    } else {
-        // Settle back down when grounded
-        player.jumpAnim = Math.max(player.jumpAnim - 1, 0);
-    }
+    updateCharacterAnimation(player);
 }
 
 function getPlayerCollisionRects(baseX = player.x, baseY = player.y) {
@@ -221,52 +355,68 @@ function getPlayerCollisionRects(baseX = player.x, baseY = player.y) {
     }];
 }
 
-function drawPlayer(ctx, playerObject = player) {
-    // Head tilts whenever moving horizontally (ground or air)
-    const moving = Math.abs(playerObject.velocityX) > 0.2;
-    const dir = moving ? Math.sign(playerObject.velocityX) : 0;
-    const vx = playerObject.velocityX;
+function drawCharacter(ctx, characterObject = player, cameraObject = camera) {
+    const moving = Math.abs(characterObject.velocityX) > 0.2;
+    const dir = moving ? Math.sign(characterObject.velocityX) : 0;
+    const vx = characterObject.velocityX;
+    const speedScale = moving ? Math.min(Math.abs(vx) / (characterObject.maxSpeed || 4), 1) : 0;
+    const tiltAnimation = characterObject.model && characterObject.model.animations && characterObject.model.animations.tilt;
+    const bobAnimation = characterObject.model && characterObject.model.animations && characterObject.model.animations.bob;
+    const parts = Array.isArray(characterObject.parts) && characterObject.parts.length
+        ? characterObject.parts
+        : (characterObject.model && Array.isArray(characterObject.model.parts) ? characterObject.model.parts : []);
 
-    let baseOffsets = [3, 2.5, 2, 1.5, 1];
-    let vertOffsets = [11, 9, 7, 5, 3];
-
-    if (moving) {
-        const speedScale = Math.min(Math.abs(vx) / (playerObject.maxSpeed || player.maxSpeed), 1);
-        baseOffsets = baseOffsets.map(b => b * speedScale);
+    if (!parts.length) {
+        ctx.fillStyle = characterObject.color || "white";
+        ctx.fillRect(
+            Math.round(characterObject.x - (cameraObject ? cameraObject.x : 0)),
+            Math.round(characterObject.y - (cameraObject ? cameraObject.y : 0)),
+            characterObject.width || 20,
+            characterObject.height || 20
+        );
+        return;
     }
 
-    for (let i = 0; i < playerObject.parts.length; i++) {
-        const part = playerObject.parts[i];
-        const isHead = i <= 4;
+    const baseOffsets = [3, 2.5, 2, 1.5, 1];
+    const vertOffsets = [11, 9, 7, 5, 3];
+    const animatedOffsets = moving
+        ? baseOffsets.map(b => b * speedScale)
+        : baseOffsets;
 
+    for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        const isHead = i <= 4;
         let offsetX = part.x;
         let offsetY = part.y;
 
-        // === HEAD TILT (horizontal movement) ===
-        if (moving && i < baseOffsets.length) {
-            offsetX = part.x + dir * baseOffsets[i];
+        if (moving && i < animatedOffsets.length) {
+            offsetX = part.x + dir * animatedOffsets[i];
         }
 
-        // === HEAD SEPARATION (jump animation) ===
-        if (isHead) {
-            const bobScale = (playerObject.jumpAnim || 0) / 8; // 0 → 1
+        if (tiltAnimation && tiltAnimation.enabled && moving) {
+            offsetX = part.x + dir * (tiltAnimation.strength || 2) * speedScale;
+        }
+
+        if (isHead && bobAnimation && bobAnimation.enabled) {
+            const bobScale = ((characterObject.state && characterObject.state.jumpAnim) || 0) / 8;
             offsetY = part.y - vertOffsets[i] * bobScale;
         }
 
         ctx.fillStyle = part.color;
-
         ctx.fillRect(
-            Math.round(playerObject.x + offsetX - camera.x),
-            Math.round(playerObject.y + offsetY - camera.y),
+            Math.round(characterObject.x + offsetX - (cameraObject ? cameraObject.x : 0)),
+            Math.round(characterObject.y + offsetY - (cameraObject ? cameraObject.y : 0)),
             part.w,
             part.h
         );
     }
 }
 
+function drawPlayer(ctx, playerObject = player) {
+    drawCharacter(ctx, playerObject, camera);
+}
+
 function drawPlayerVariants(ctx) {
-    // Draw any extra test players defined by the current level.
-    // These are visual-only variants and do not participate in player input.
     if (!currentLevel?.playerVariants || !Array.isArray(currentLevel.playerVariants)) return;
     for (const variant of currentLevel.playerVariants) {
         drawPlayer(ctx, variant);
